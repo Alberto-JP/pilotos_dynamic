@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Ejemplo 9</title>
+   <link rel="stylesheet" href="css/bootstrap.min.css">
+   <link rel="stylesheet" href="css/bootstrap-icons.min.css">
+   <style>
+        * {
+            margin:0;
+            padding:0;
+            font-size:100%;
+        }
+   </style>
+</head>
+<body>
+    <!-- div.d-flex.justify-content-center.gap-2.flex-wrap -->
+    <h1 class="text-center m-3">Candidatos <span id="numCandidatos">8</span></h1>
+    <div id="candidatos" class="d-flex justify-content-center gap-2 flex-wrap"></div>
+    <h1 class="text-center">Elegidos <span id="numElegidos">0</span></h1>
+    <div id="elegidos" class="d-flex justify-content-center gap-2 flex-wrap"></div>
+
+    <script>
+        // Punteros a elementos de la página
+        const candidatos = document.getElementById("candidatos");
+        const elegidos = document.getElementById("elegidos");
+        const numCan = document.getElementById("numCandidatos");
+        const numEle = document.getElementById("numElegidos");
+
+        // Variables contador
+        let conCan = 8;
+        let conEle = 0;
+
+        /* Se podría aumentar el dinamismo incluso en la creación de los elementos del array y asignación de las 
+        *  propiedades cargar. media/pilotos/*.jpg y crear ids recogidos del nombre de los archivos
+        *  Array que contiene las imágenes y los ids de los elementos <img> que las van a contener, para
+        *  solamente mostrar la creación de elementos HTML de manera dinámica
+        */
+        const images = [
+            [ "media/pilotos/alpine_150x150.jpg", "piloto1" ],
+            [ "media/pilotos/aston_150x150.jpeg", "piloto2" ],
+            [ "media/pilotos/ferrari_150x150.jpeg", "piloto3" ],
+            [ "media/pilotos/hass_150x150.jpeg", "piloto4" ],
+            [ "media/pilotos/mclaren_150x150.jpeg", "piloto5" ],
+            [ "media/pilotos/mercedes_150x150.jpeg", "piloto6" ],
+            [ "media/pilotos/redbull_150x150.jpeg", "piloto7" ],
+            [ "media/pilotos/williams_150x150.jpeg", "piloto8" ]
+        ];
+        
+        // Crea un array bidimensional en este caso, usando la función map para recoger los datos
+        const imageElements = images.map(([name, id]) => {
+            const img = document.createElement("img");
+            img.src = name;
+            img.id = id;
+            return img;
+        });
+
+        /* Esta función mueve los pilotos entre los contenedores 
+            comparando en el elemento padre del elemento que envió el evento
+            y situándolo en el contenedor contrario
+        */
+        function moverPiloto(evt) {
+            //console.log(evt.target.nodeName);
+            /* filtra de donde viene el evento para evitar errores con el elemento padre*/
+            if (evt.target.nodeName == "IMG") {
+                const piloto = evt.target;
+                // comprobamos si el evento proviene de un IMG que está contenido en el DIV#candidatos
+                if (evt.target.parentNode.id == candidatos.id) {
+                    elegidos.appendChild(piloto);
+                    // incrementamos y decrementamos respectivamente los contadores
+                    numCan.textContent = --conCan;
+                    numEle.textContent = ++conEle;
+                } else {
+                    // incrementamos y decrementamos respectivamente los contadores en caso contrario
+                    candidatos.appendChild(piloto);
+                    numCan.textContent = ++conCan;
+                    numEle.textContent = --conEle;
+                }
+            }
+        }
+
+        // Agrega las imágenes al contenedor padre con id #candidatos usando la funcion forEach que recorre un array de 2 dimensiones previamente creado
+        const container = document.getElementById("candidatos");
+        imageElements.forEach(img => container.appendChild(img));
+        
+        // Escucha eventos mouseclick en los div donde se van a crear dinamicamente y posteriormente reasignar como hijos los img
+        document.getElementById("candidatos").addEventListener("click", moverPiloto);
+        document.getElementById("elegidos").addEventListener("click", moverPiloto);
+     </script>
+</body>
+</html>
